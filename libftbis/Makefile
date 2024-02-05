@@ -57,7 +57,7 @@ SRCS		:=	\
 				ft_lstiter.c\
 				ft_lstmap.c\
 
-SRCS_D		:=	#
+SRCS_D		:=	src/
 
 OBJS_D		:=	objs/
 
