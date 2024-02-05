@@ -14,10 +14,10 @@
 #ifndef MINITALK_H
 # define MINITALK_H
 
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include "libftbis/libft.h"
-#include <signal.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include "libftbis/libft.h"
+# include <signal.h>
 
 #endif

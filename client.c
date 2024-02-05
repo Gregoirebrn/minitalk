@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/05 02:16:48 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/05 17:17:01 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ static	void	send_str(pid_t pid, char *str)
 
 int	main(int ac, char **av)
 {
-	pid_t pid;
+	pid_t	pid;
 
 	if (ac < 3 || !av[2])
 		return (2);
 	ft_putstr_fd("Sended at ", 1);
-	ft_putnbr_fd(ft_strlen(av[2]), 1);
-	ft_putstr_fd("Received : ", 1);
+	ft_putnbr_fd(atoi(av[1]), 1);
+	ft_putstr_fd("\n", 1);
 	pid = atoi(av[1]);
 	send_str(pid, av[2]);
 	while (1)
