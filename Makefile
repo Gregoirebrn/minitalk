@@ -6,7 +6,7 @@
 #    By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/07 16:45:45 by grebrune          #+#    #+#              #
-#    Updated: 2024/02/02 01:23:17 by grebrune         ###   ########.fr        #
+#    Updated: 2024/02/05 00:55:57 by grebrune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,41 +14,31 @@
 #                                                       VARIABLE                                                       #
 ########################################################################################################################
 
-SRCS		:=	so_long.c\
-				parsing.c\
-				parsing_utils.c\
-				print_map.c\
-				close_win.c\
-				game_move.c\
-				tab_creator.c\
+SRCS_S		:=	serveur.c
 
-SRCS_B		:=	so_long.c\
-				parsing_bonus.c\
-				parsing_utils.c\
-				print_map.c\
-				close_win.c\
-				game_move.c\
-				tab_creator.c\
+SRCS_C		:=	client.c
 
-SRCS_D		:=	src/
+SRCS_DS		:=	#
 
-OBJS_D		:=	objs/
+SRCS_DC		:=	#
 
-OBJS_B_D	:=	objs_b/
+OBJS_DS		:=	objs_svr/
 
-OBJS		:=	$(SRCS:%.c=$(OBJS_D)%.o)
+OBJS_DC		:=	objs_cli/
 
-OBJS_B		:=	$(SRCS_B:%.c=$(OBJS_B_D)%.o)
+OBJS_S		:=	$(SRCS_S:%.c=$(OBJS_DS)%.o)
 
-HEAD		:=	so_long.h
+OBJS_C		:=	$(SRCS_C:%.c=$(OBJS_DC)%.o)
+
+HEAD		:=	minitalk.h
 
 HEAD_D		:=	.
 
 CFLAGS		:=	-Wall -Wextra -Werror
 
-NAME		:=	so_long
+CLI			:=	client.a
 
-NAME_B		:=	so_long_bonus
+SVR			:=	serveur.a
 
 ########################################################################################################################
 #                                                         LIB                                                          #
@@ -63,66 +53,48 @@ LIB_H		:=	$(LIB_I)libft.h
 
 LIB_A		:=	$(addprefix $(LIB_D), $(LIB))
 
-MLX			:=	libmlx.a
-
-MLX_D		:=	mlx_linux/
-
-MLX_F		:=	-L$(MLX_D) -L/usr/lib -lmlx -lXext -lX11 -lm -lz
-
-MLX_H		:=	$(MLX_D)mlx.h
-
-MLX_A		:=	$(addprefix $(MLX_D), $(MLX))
-
 ########################################################################################################################
 #                                                        RULES                                                         #
 ########################################################################################################################
 
 all			:	lib
-				$(MAKE) $(NAME)
-
-bonus		:	lib
-				$(MAKE) $(NAME_B)
+				$(MAKE) $(SVR)
+				$(MAKE) $(CLI)
 
 lib			:
-			$(MAKE) -C $(LIB_D)
-			$(MAKE) -C $(MLX_D)
+				$(MAKE) -C $(LIB_D)
 
-$(NAME)		:	$(OBJS_D) $(OBJS) $(LIB_A) $(MLX_A) $(HEAD)
-				$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(MLX_A) $(LIB_A) $(MLX_F)
+$(SVR)		:	$(OBJS_DS) $(OBJS_S) $(LIB_A) $(HEAD)
+				$(CC) $(CFLAGS) -o $(SVR) $(OBJS_S) $(LIB_A)
 
-$(OBJS)		:	$(OBJS_D)%.o: $(SRCS_D)%.c $(HEAD) $(MLX_H) $(LIB_H)
-				$(CC) $(CFLAGS) -I/usr/include -Ilibftbis -Imlx_linux -c $< -o $@
+$(OBJS_S)	:	$(OBJS_DS)%.o: $(SRCS_DS)%.c $(HEAD) $(LIB_H)
+				$(CC) $(CFLAGS) -I/usr/include -Ilibftbis -c $< -o $@
 
-$(OBJS_D)	:
-				@mkdir -p $(OBJS_D)
+$(OBJS_DS)	:
+				@mkdir -p $(OBJS_DS)
 
+$(CLI)		:	 $(OBJS_DC) $(OBJS_C) $(LIB_A) $(HEAD)
+				$(CC) $(CFLAGS) -o $(CLI) $(OBJS_C) $(LIB_A)
 
+$(OBJS_C)	:	$(OBJS_DC)%.o: $(SRCS_DC)%.c $(HEAD) $(LIB_H)
+				$(CC) $(CFLAGS) -I/usr/include -Ilibftbis -c $< -o $@
+
+$(OBJS_DC)	:
+				@mkdir -p $(OBJS_DC)
 ########################################################################################################################
 #                                                        BONUS                                                         #
 ########################################################################################################################
-
-$(NAME_B)	:	 $(OBJS_B_D) $(OBJS_B) $(LIB_A) $(MLX_A) $(HEAD)
-				$(CC) $(CFLAGS) -o $(NAME_B) $(OBJS_B) $(MLX_A) $(LIB_A) $(MLX_F)
-
-$(OBJS_B)	:	$(OBJS_B_D)%.o: $(SRCS_D)%.c $(HEAD) $(LIB_H) $(MLX_H)
-				$(CC) $(CFLAGS) -I/usr/include -Ilibftbis -Imlx_linux -c $< -o $@
-
-$(OBJS_B_D)	:
-				@mkdir -p $(OBJS_B_D)
-
 ########################################################################################################################
 #                                                        COMMANDS                                                      #
 ########################################################################################################################
 
 clean		:
-				$(RM) -r $(OBJS) $(OBJS_D) $(OBJS_B) $(OBJS_B_D)
+				$(RM) -r $(OBJS_C) $(OBJS_DC) $(OBJS_S) $(OBJS_DS)
 				$(MAKE) clean -C libftbis
-				$(MAKE) clean -C mlx_linux
 
 fclean		:	clean
-				$(RM) $(NAME) $(NAME_B)
+				$(RM) $(CLI) $(SVR)
 				$(MAKE) fclean -C libftbis
-				$(MAKE) clean -C mlx_linux
 
 re			:	fclean all
 
