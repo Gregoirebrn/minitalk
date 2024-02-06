@@ -36,9 +36,9 @@ HEAD_D		:=	.
 
 CFLAGS		:=	-Wall -Wextra -Werror
 
-CLI			:=	client.a
+CLI			:=	client
 
-SVR			:=	serveur.a
+SVR			:=	serveur
 
 ########################################################################################################################
 #                                                         LIB                                                          #
