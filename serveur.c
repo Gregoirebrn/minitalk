@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/06 19:49:36 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:44:31 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,24 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	if (pid_cli == 0)
 		pid_cli = info->si_pid;
 	if (sig == SIGUSR2)
-	{
 		received_c <<= 1;
-		byte_count++;
-		kill(pid_cli, SIGUSR1);
-	}
 	else if (sig == SIGUSR1)
 	{
 		received_c <<= 1;
 		received_c |= 1;
-		byte_count++;
-		kill(pid_cli, SIGUSR1);
 	}
-	if (byte_count == 8 && received_c == '\0')
-		kill(pid_cli, SIGUSR2);
+	byte_count++;
+	kill(pid_cli, SIGUSR1);
 	if (byte_count == 8)
 	{
+		if (!received_c)
+		{
+			kill(pid_cli, SIGUSR2);
+			ft_putstr_fd("\n", 1);
+			byte_count = 0;
+			pid_cli = 0;
+			return ;
+		}
 		ft_putchar_fd(received_c, 1);
 		received_c = 0;
 		byte_count = 0;

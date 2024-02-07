@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/06 19:46:03 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:45:35 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ static void	signal_handler(int sig)
 	static int	rec_bit = 0;
 
 	if (sig == SIGUSR1)
+	{
 		rec_bit++;
+	}
 	if (sig == SIGUSR2)
 	{
 		ft_putstr_fd("Finish Sending ", 1);
@@ -31,7 +33,7 @@ static	void	send_str(pid_t pid, char *str)
 {
 	int		i;
 	int		x;
-	char	c;
+	unsigned char	c;
 
 	x = 0;
 	while (str && str[x])
@@ -51,7 +53,7 @@ static	void	send_str(pid_t pid, char *str)
 	i = 8;
 	while (i--)
 	{
-		kill(pid, SIGUSR1);
+		kill(pid, SIGUSR2);
 		usleep(100);
 	}
 }
@@ -70,6 +72,6 @@ int	main(int ac, char **av)
 	signal(SIGUSR2, signal_handler);
 	send_str(pid, av[2]);
 	while (1)
-		pause();
+		pause ();
 	return (0);
 }
