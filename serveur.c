@@ -6,17 +6,47 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/07 15:44:31 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/12 16:45:27 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+static size_t	ft_getlen(unsigned const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str && str[i])
+		i++;
+	return (i);
+}
+
+static unsigned char	*ft_realloc(unsigned char *src_str, unsigned char c)
+{
+	size_t			i;
+	unsigned char	*new_str;
+
+	i = ft_getlen(src_str);
+	new_str = malloc(sizeof (char) * (i + 2));
+	i = 0;
+	while (src_str && src_str[i])
+	{
+		new_str[i] = src_str[i];
+	}
+	new_str[i++] = c;
+	new_str[i] = '\0';
+	if (src_str)
+		free(src_str);
+	return (new_str);
+}
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static pid_t			pid_cli = 0;
 	static unsigned char	received_c = 0;
 	static int				byte_count = 0;
+	static unsigned char	*str = 0;
 
 	(void)ucontext;
 	if (pid_cli == 0)
@@ -29,7 +59,6 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 		received_c |= 1;
 	}
 	byte_count++;
-	kill(pid_cli, SIGUSR1);
 	if (byte_count == 8)
 	{
 		if (!received_c)
@@ -40,10 +69,13 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 			pid_cli = 0;
 			return ;
 		}
-		ft_putchar_fd(received_c, 1);
+		str = ft_realloc(str, received_c);
 		received_c = 0;
 		byte_count = 0;
 	}
+	kill(pid_cli, SIGUSR1);
+	ft_putstr_fd(str, 1);
+	free(str);
 }
 
 int	main(void)

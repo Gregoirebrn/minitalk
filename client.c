@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/07 15:45:35 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/12 14:43:12 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static	void	send_str(pid_t pid, char *str)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
-			usleep(100);
+			usleep(1000);
 		}
 		x++;
 	}
@@ -54,7 +54,7 @@ static	void	send_str(pid_t pid, char *str)
 	while (i--)
 	{
 		kill(pid, SIGUSR2);
-		usleep(100);
+		usleep(10000);
 	}
 }
 
