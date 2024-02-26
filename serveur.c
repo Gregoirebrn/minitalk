@@ -6,16 +6,19 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/07 15:44:31 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/22 18:28:10 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+static void	ft_realloc(unsigned char c, unsigned char)
+
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static pid_t			pid_cli = 0;
 	static unsigned char	received_c = 0;
+	static unsigned char	*str = NULL;
 	static int				byte_count = 0;
 
 	(void)ucontext;
@@ -29,7 +32,6 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 		received_c |= 1;
 	}
 	byte_count++;
-	kill(pid_cli, SIGUSR1);
 	if (byte_count == 8)
 	{
 		if (!received_c)
@@ -40,10 +42,11 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 			pid_cli = 0;
 			return ;
 		}
-		ft_putchar_fd(received_c, 1);
+		ft_realloc(received_c, str);
 		received_c = 0;
 		byte_count = 0;
 	}
+	kill(pid_cli, SIGUSR1);
 }
 
 int	main(void)
