@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/27 16:32:00 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:53:11 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 	static int				byte_count = 0;
 
 	(void)ucontext;
+	if (sig == SIGINT)
+	{
+		ft_putstr_fd("\nServer closed.\n", 1);
+		exit (0);
+	}
 	if (pid_cli == 0)
 		pid_cli = info->si_pid;
 	if (sig == SIGUSR2)
@@ -88,8 +93,11 @@ int	main(void)
 	ft_putstr_fd("\n", 1);
 	s_sig.sa_sigaction = signal_handler;
 	s_sig.sa_flags = SA_SIGINFO;
+	sigemptyset(&s_sig.sa_mask);
+	sigaddset(&s_sig.sa_mask, SIGINT);
 	sigaction(SIGUSR1, &s_sig, 0);
 	sigaction(SIGUSR2, &s_sig, 0);
+	sigaction(SIGINT, &s_sig, 0);
 	while (1)
 		pause();
 	return (0);
