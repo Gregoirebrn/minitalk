@@ -6,13 +6,45 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/22 18:28:10 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/26 17:26:17 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+#include <stdio.h>
 
-static void	ft_realloc(unsigned char c, unsigned char)
+static size_t	ft_getlen(const unsigned char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str && str[i])
+		i++;
+	return (i);
+}
+
+static void	ft_realloc(unsigned char c, unsigned char *str)
+{
+	size_t			i;
+	unsigned char	*new;
+
+	i = ft_getlen(str);
+	printf("%zu\n", i);
+	new = ft_calloc(sizeof (unsigned char), (i + 2));
+	i = 0;
+	while (str && str[i])
+	{
+		new[i] = str[i];
+		i++;
+	}
+	new[i] = c;
+	printf("new = %s\n", new);
+	if (str)
+		free(str);
+	str = new;
+	free(new);
+	printf("str = %s\n", str);
+}
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
@@ -37,6 +69,7 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 		if (!received_c)
 		{
 			kill(pid_cli, SIGUSR2);
+			ft_putstr_fd((char *)str, 1);
 			ft_putstr_fd("\n", 1);
 			byte_count = 0;
 			pid_cli = 0;
