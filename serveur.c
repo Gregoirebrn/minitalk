@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/27 16:53:11 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/27 19:29:35 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,46 +42,53 @@ static unsigned char	*ft_realloc(unsigned char c, unsigned char *str)
 	return (new);
 }
 
+static unsigned char	*do_bit(int sig, pid_t pid, unsigned char *str)
+{
+	static unsigned char	c = 0;
+	static int				b = 0;
+
+	c <<= 1;
+	if (sig == SIGUSR1)
+		c |= 1;
+	b += 1;
+	if (b == 8)
+	{
+		if (!c)
+		{
+			kill(pid, SIGUSR2);
+			ft_putstr_fd((char *)str, 1);
+			ft_putstr_fd("\n", 1);
+			pid = 0;
+			b = 0;
+			free(str);
+			return (NULL);
+		}
+		str = ft_realloc(c, str);
+		c = 0;
+		b = 0;
+	}
+	kill(pid, SIGUSR1);
+	return (str);
+}
+
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static pid_t			pid_cli = 0;
-	static unsigned char	received_c = 0;
 	static unsigned char	*str = NULL;
-	static int				byte_count = 0;
 
 	(void)ucontext;
 	if (sig == SIGINT)
 	{
 		ft_putstr_fd("\nServer closed.\n", 1);
+		free(str);
 		exit (0);
 	}
 	if (pid_cli == 0)
 		pid_cli = info->si_pid;
-	if (sig == SIGUSR2)
-		received_c <<= 1;
-	else if (sig == SIGUSR1)
-	{
-		received_c <<= 1;
-		received_c |= 1;
-	}
-	byte_count++;
-	if (byte_count == 8)
-	{
-		if (!received_c)
-		{
-			kill(pid_cli, SIGUSR2);
-			ft_putstr_fd((char *)str, 1);
-			ft_putstr_fd("\n", 1);
-			str = NULL;
-			byte_count = 0;
-			pid_cli = 0;
-			return ;
-		}
-		str = ft_realloc(received_c, str);
-		received_c = 0;
-		byte_count = 0;
-	}
-	kill(pid_cli, SIGUSR1);
+	str = do_bit(sig, pid_cli, str);
+	pid_cli = 0;
+	if (!str)
+		return ;
 }
 
 int	main(void)

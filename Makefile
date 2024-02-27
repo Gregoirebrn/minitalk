@@ -34,7 +34,7 @@ HEAD		:=	minitalk.h
 
 HEAD_D		:=	.
 
-CFLAGS		:=	-Wall -Wextra -Werror
+CFLAGS		:=	-Wall -Wextra -Werror -g3
 
 CLI			:=	client
 

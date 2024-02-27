@@ -31,8 +31,8 @@ static void	signal_handler(int sig)
 
 static	void	send_str(pid_t pid, char *str)
 {
-	int		i;
-	int		x;
+	int				i;
+	int				x;
 	unsigned char	c;
 
 	x = 0;
