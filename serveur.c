@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/27 16:06:01 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:32:00 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 			kill(pid_cli, SIGUSR2);
 			ft_putstr_fd((char *)str, 1);
 			ft_putstr_fd("\n", 1);
+			str = NULL;
 			byte_count = 0;
 			pid_cli = 0;
 			return ;
