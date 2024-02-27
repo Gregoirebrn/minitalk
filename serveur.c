@@ -6,47 +6,20 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/12 16:45:27 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/22 18:28:10 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static size_t	ft_getlen(unsigned const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str && str[i])
-		i++;
-	return (i);
-}
-
-static unsigned char	*ft_realloc(unsigned char *src_str, unsigned char c)
-{
-	size_t			i;
-	unsigned char	*new_str;
-
-	i = ft_getlen(src_str);
-	new_str = malloc(sizeof (char) * (i + 2));
-	i = 0;
-	while (src_str && src_str[i])
-	{
-		new_str[i] = src_str[i];
-	}
-	new_str[i++] = c;
-	new_str[i] = '\0';
-	if (src_str)
-		free(src_str);
-	return (new_str);
-}
+static void	ft_realloc(unsigned char c, unsigned char)
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static pid_t			pid_cli = 0;
 	static unsigned char	received_c = 0;
+	static unsigned char	*str = NULL;
 	static int				byte_count = 0;
-	static unsigned char	*str = 0;
 
 	(void)ucontext;
 	if (pid_cli == 0)
@@ -69,13 +42,11 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 			pid_cli = 0;
 			return ;
 		}
-		str = ft_realloc(str, received_c);
+		ft_realloc(received_c, str);
 		received_c = 0;
 		byte_count = 0;
 	}
 	kill(pid_cli, SIGUSR1);
-	ft_putstr_fd(str, 1);
-	free(str);
 }
 
 int	main(void)
