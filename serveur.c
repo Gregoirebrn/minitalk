@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/26 17:26:17 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:06:01 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,12 @@ static size_t	ft_getlen(const unsigned char *str)
 	return (i);
 }
 
-static void	ft_realloc(unsigned char c, unsigned char *str)
+static unsigned char	*ft_realloc(unsigned char c, unsigned char *str)
 {
 	size_t			i;
 	unsigned char	*new;
 
 	i = ft_getlen(str);
-	printf("%zu\n", i);
 	new = ft_calloc(sizeof (unsigned char), (i + 2));
 	i = 0;
 	while (str && str[i])
@@ -38,12 +37,9 @@ static void	ft_realloc(unsigned char c, unsigned char *str)
 		i++;
 	}
 	new[i] = c;
-	printf("new = %s\n", new);
 	if (str)
 		free(str);
-	str = new;
-	free(new);
-	printf("str = %s\n", str);
+	return (new);
 }
 
 void	signal_handler(int sig, siginfo_t *info, void *ucontext)
@@ -75,7 +71,7 @@ void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 			pid_cli = 0;
 			return ;
 		}
-		ft_realloc(received_c, str);
+		str = ft_realloc(received_c, str);
 		received_c = 0;
 		byte_count = 0;
 	}
