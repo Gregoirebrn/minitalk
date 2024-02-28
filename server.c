@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/28 17:03:21 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/28 17:12:41 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static unsigned char	*do_bit(int sig, siginfo_t *info, unsigned char *str)
 	return (str);
 }
 
-void	signal_handler(int sig, siginfo_t *info, void *ucontext)
+static void	signal_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static unsigned char	*str = NULL;
 
