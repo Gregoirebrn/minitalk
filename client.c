@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/07 15:45:35 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/28 15:02:48 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,27 @@ static void	signal_handler(int sig)
 	}
 	if (sig == SIGUSR2)
 	{
+		rec_bit++;
 		ft_putstr_fd("Finish Sending ", 1);
 		ft_putnbr_fd(rec_bit, 1);
 		ft_putstr_fd(" bits.\n", 1);
-		exit (0);
 	}
 }
 
-static	void	send_str(pid_t pid, char *str)
+static	void	send_end(pid_t pid)
+{
+	int	i;
+
+	i = 8;
+	while (i--)
+	{
+		usleep(100);
+		kill(pid, SIGUSR2);
+		pause();
+	}
+}
+
+static	int	send_str(pid_t pid, char *str)
 {
 	int				i;
 	int				x;
@@ -42,20 +55,21 @@ static	void	send_str(pid_t pid, char *str)
 		c = str[x];
 		while (i--)
 		{
+			usleep(100);
 			if (c >> i & 1)
-				kill(pid, SIGUSR1);
+			{
+				if (kill(pid, SIGUSR1) < 0)
+					return (1);
+			}
 			else
-				kill(pid, SIGUSR2);
+				if (kill(pid, SIGUSR2) < 0)
+					return (1);
 			pause();
 		}
 		x++;
 	}
-	i = 8;
-	while (i--)
-	{
-		kill(pid, SIGUSR2);
-		pause();
-	}
+	send_end(pid);
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -63,15 +77,14 @@ int	main(int ac, char **av)
 	pid_t			pid;
 
 	if (ac < 3 || !av[2])
-		return (2);
-	ft_putstr_fd("Sended at ", 1);
-	ft_putnbr_fd(atoi(av[1]), 1);
-	ft_putstr_fd("\n", 1);
+		return (ft_putstr_fd("Missing PID & message.\n", 1), 2);
 	pid = atoi(av[1]);
+	if (pid < 1)
+		return (ft_putstr_fd("Wrong PID.\n", 1), 2);
+	ft_putstr_fd("Sending ...\n", 1);
 	signal(SIGUSR1, signal_handler);
 	signal(SIGUSR2, signal_handler);
-	send_str(pid, av[2]);
-	while (1)
-		pause ();
+	if (1 == send_str(pid, av[2]))
+		return (ft_putstr_fd("Wrong PID.\n", 1), 2);
 	return (0);
 }

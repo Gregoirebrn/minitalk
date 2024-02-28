@@ -6,7 +6,7 @@
 #    By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/07 16:45:45 by grebrune          #+#    #+#              #
-#    Updated: 2024/02/06 18:51:05 by grebrune         ###   ########.fr        #
+#    Updated: 2024/02/28 14:18:43 by grebrune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 #                                                       VARIABLE                                                       #
 ########################################################################################################################
 
-SRCS_S		:=	serveur.c
+SRCS_S		:=	server.c
 
 SRCS_C		:=	client.c
 
@@ -34,7 +34,7 @@ HEAD		:=	minitalk.h
 
 HEAD_D		:=	.
 
-CFLAGS		:=	-Wall -Wextra -Werror -g3
+CFLAGS		:=	-Wall -Wextra -Werror
 
 CLI			:=	client
 
