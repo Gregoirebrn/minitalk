@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/28 15:17:49 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:55:16 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static	void	send_end(pid_t pid)
 	i = 8;
 	while (i--)
 	{
+		usleep(SLEEP_T);
 		kill(pid, SIGUSR2);
 		pause();
 	}
@@ -45,28 +46,28 @@ static	int	send_str(pid_t pid, char *str)
 {
 	int				i;
 	int				x;
-	unsigned char	c;
 
 	x = 0;
 	while (str && str[x])
 	{
 		i = 8;
-		c = str[x];
 		while (i--)
 		{
-			if (c >> i & 1)
+			usleep(SLEEP_T);
+			if (str[x] >> i & 1)
 			{
 				if (kill(pid, SIGUSR1) < 0)
 					return (1);
 			}
 			else
+			{
 				if (kill(pid, SIGUSR2) < 0)
 					return (1);
+			}
 			pause();
 		}
 		x++;
 	}
-	send_end(pid);
 	return (0);
 }
 
@@ -84,5 +85,6 @@ int	main(int ac, char **av)
 	signal(SIGUSR2, signal_handler);
 	if (1 == send_str(pid, av[2]))
 		return (ft_putstr_fd("Wrong PID.\n", 1), 2);
+	send_end(pid);
 	return (0);
 }

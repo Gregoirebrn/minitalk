@@ -19,4 +19,6 @@
 # include "libftbis/libft.h"
 # include <signal.h>
 
+# define SLEEP_T 100
+
 #endif
