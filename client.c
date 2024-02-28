@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:11:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/28 15:02:48 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/28 15:17:49 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ static	void	send_end(pid_t pid)
 	i = 8;
 	while (i--)
 	{
-		usleep(100);
 		kill(pid, SIGUSR2);
 		pause();
 	}
@@ -55,7 +54,6 @@ static	int	send_str(pid_t pid, char *str)
 		c = str[x];
 		while (i--)
 		{
-			usleep(100);
 			if (c >> i & 1)
 			{
 				if (kill(pid, SIGUSR1) < 0)

@@ -6,7 +6,7 @@
 /*   By: grebrune <grebrune@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 02:14:04 by grebrune          #+#    #+#             */
-/*   Updated: 2024/02/28 15:31:39 by grebrune         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:12:26 by grebrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ static unsigned char	*do_bit(int sig, pid_t *pid, unsigned char *str)
 			kill(*pid, SIGUSR2);
 			*pid = 0;
 			b = 0;
-			free(str);
-			return (NULL);
+			c = 0;
+			return (free(str), NULL);
 		}
 		str = ft_realloc(c, str);
 		c = 0;
